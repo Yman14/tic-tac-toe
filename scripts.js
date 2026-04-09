@@ -10,14 +10,14 @@ function Gameboard() {
             board[i] = [];
             for(let j = 0; j < boardSize; j++)
             {
-                board[i][j] = " ";
+                board[i][j] = "-";
             }
         }
     };
 
    const getBoard = () => board;
 
-   return {createBoard, getBoard};
+   return {boardSize, createBoard, getBoard};
 };
 
 function CreatePlayer(name, marker) {
@@ -52,79 +52,45 @@ function Gameplay () {
     };
 
     const getMove = () => {
-        const input = getInput();
         if(player1Move){
+            const input = getInput(p1);
             playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
         }else{
+            const input = getInput(p2);
             computerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
         }
     };
 
-    const getInput = () => {
-        return prompt("Move: ");
+    const getInput = (playerTurn) => {
+        return prompt(`${playerTurn.name} Move: `);
     };
 
     const displayBoard = ()=> board.getBoard();
-    const displayBoard1 = ()=> {
-        for(let i = 0; i <= board.boardSize; i++)
-        {
-            for(let j = 0; j <= board.boardSize; j++)
-            {
-                console.log(board.getBoard()[i][j]);
-            }
-        }
-    };
 
-    return {board, p1, p2, playerController, playerMove, computerMove, getInput, getMove, displayBoard, displayBoard1};
+    return {board, p1, p2, playerController, playerMove, computerMove, getInput, getMove, displayBoard};
 };
 
 (function StartGame(){
     console.log("Game Start!");
     const game = Gameplay();
     console.log(game.displayBoard());
-    console.log(game.displayBoard1());
-    console.log(game.board.getBoard()[1][0]);
-    console.log(game.board.getBoard()[1][0]);
-    console.log(game.board.getBoard()[1][0]);
-    for(let i = 0; i <= game.board.boardSize; i++)
-    {
-        for(let j = 0; j <= game.board.boardSize; j++)
-        {
-            console.log(game.board.getBoard()[i][j]);
+    
+    function playRound() {
+        let minTurn = 9;
+        let gameOver = false;
+
+        while(!gameOver) {
+            game.getMove();
+            minTurn--;
+            if(minTurn<=0) gameOver=true;
         }
-    }
-
-    // while(noOneWins()){
-    //     getMove();
-    // }
-    let n = 3;
-    while(n>0)
+    };
+    let play = 1;
+    while(play == 1)
     {
-        game.getMove();
-        n--;
+        playRound();
+        play = prompt("Enter 1 to play again: ");
     }
-    console.log(game.board.getBoard()[1][0]);
-    console.log(game.board.getBoard()[1][1]);
-    console.log(game.board.getBoard()[1][2]);
-      console.log(game.board.boardSize);
-    for(let i = 0; i <= game.board.boardSize; i++)
-    {
-        for(let j = 0; j <= game.board.boardSize; j++)
-        {
-            console.log(game.board.getBoard()[i][j]);
-        }
-    }
-
-    // console.log("Player Move: ");
-    // input = game.getInput();
-    // game.playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
-    // console.log(game.displayBoard());
-
-    // console.log("Computer Move: ");
-    // input = game.getInput();
-    // game.computerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
-    // console.log(game.displayBoard());
-
 
 })();
 
