@@ -35,7 +35,10 @@ function Gameplay () {
     board.createBoard();
     const p1 = CreatePlayer("PLAYER", "X");
     const p2 = CreatePlayer("COMPUTER", "O");
-    let player1Move = true;
+    let playerTurned = true;
+    let roundOver = false;
+    //First to reach the score wins
+    const targetScore = 2;
 
     const playerController = (i, j, p) => {
         board.getBoard()[i][j] = p.marker;
@@ -43,16 +46,22 @@ function Gameplay () {
 
     const playerMove = (i, j) => {
         playerController(i, j, p1);
-        player1Move = false;
+        //check if winning codition met
+        roundWinningCondition();
+
+        playerTurned = false;
     };
 
     const computerMove = (i, j) => {
         playerController(i, j, p2);
-        player1Move = true;
+        //check if winning codition met
+        roundWinningCondition();
+
+        playerTurned = true;
     };
 
     const getMove = () => {
-        if(player1Move){
+        if(playerTurned){
             const input = getInput(p1);
             playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
         }else{
@@ -65,9 +74,51 @@ function Gameplay () {
         return prompt(`${playerTurn.name} Move: `);
     };
 
+    const roundWinningCondition = () => {
+        //MANUAL WINNNING CONDITIONS
+        //first corner base check
+        const upperHorizontal = (board.getBoard()[0][0] === board.getBoard()[0][1]) && (board.getBoard()[0][1] === board.getBoard()[0][2]);
+        const leftVertical = (board.getBoard()[0][0] === board.getBoard()[1][0]) && (board.getBoard()[1][0] === board.getBoard()[2][0]);
+        //last corner base check
+        const lowerHorizontal = (board.getBoard()[2][2] === board.getBoard()[2][1]) && (board.getBoard()[2][1] === board.getBoard()[2][0]);
+        const rightVertical = (board.getBoard()[2][2] === board.getBoard()[1][2]) && (board.getBoard()[1][2] === board.getBoard()[0][2]);
+        //middle base check
+        const midVertical = (board.getBoard()[1][1] === board.getBoard()[0][1]) && (board.getBoard()[1][1] === board.getBoard()[2][1]);
+        const midHorizontal = (board.getBoard()[1][1] === board.getBoard()[1][0]) && (board.getBoard()[1][1] === board.getBoard()[1][2]);
+        const midDiagionalFirst = (board.getBoard()[1][1] === board.getBoard()[0][0]) && (board.getBoard()[1][1] === board.getBoard()[2][2]);
+        const midDiagionalSecond = (board.getBoard()[1][1] === board.getBoard()[0][2]) && (board.getBoard()[1][1] === board.getBoard()[2][0]);
+
+        if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != "-"))
+        {
+            CheckRoundOver();
+        }
+        else if((lowerHorizontal || rightVertical)  && (board.getBoard()[2][2] != "-")){
+           CheckRoundOver();
+        }
+        else if((midVertical || midHorizontal || midDiagionalFirst || midDiagionalSecond)  && (board.getBoard()[1][1] != "-")){
+           CheckRoundOver();
+        }
+        
+    };
+
+    const CheckRoundOver = () => {
+        if(playerTurned) {
+            p1.win();
+            console.log("Round Win: " + p1.name);
+            console.log("Player Score: " + p1.getScore());
+        }
+        else{
+            p2.win();
+            console.log("Round Win: " + p2.name);
+            console.log("Player Score: " + p2.getScore());
+        }
+        roundOver = true;
+        
+    };
+
     const displayBoard = ()=> board.getBoard();
 
-    return {board, p1, p2, playerController, playerMove, computerMove, getInput, getMove, displayBoard};
+    return {board, roundOver, getMove, displayBoard};
 };
 
 (function StartGame(){
@@ -76,21 +127,21 @@ function Gameplay () {
     console.log(game.displayBoard());
     
     function playRound() {
-        let minTurn = 9;
-        let gameOver = false;
+        let RoundMinimumTurn = 9;
 
-        while(!gameOver) {
+        while(!game.roundOver) {
             game.getMove();
-            minTurn--;
-            if(minTurn<=0) gameOver=true;
+            RoundMinimumTurn--;
+            if(RoundMinimumTurn <= 0) {
+                game.roundOver = true;
+                console.log("Round Tie");
+            }
         }
     };
-    let play = 1;
-    while(play == 1)
-    {
-        playRound();
-        play = prompt("Enter 1 to play again: ");
-    }
+    // while(!gameOver)
+    // {
+    //     playRound();
+    // }
 
 })();
 
