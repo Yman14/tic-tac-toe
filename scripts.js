@@ -39,39 +39,32 @@ function Gameplay () {
     let roundOver = false;
     //First to reach the score wins
     const targetScore = 2;
+    const gameOver = false;
 
     const playerController = (i, j, p) => {
         board.getBoard()[i][j] = p.marker;
     };
 
-    const playerMove = (i, j) => {
-        playerController(i, j, p1);
+    const markedMove = (i, j, player) => {
+        playerController(i, j, player);
         //check if winning codition met
         roundWinningCondition();
-
-        playerTurned = false;
+        playerTurned = !playerTurned;
     };
 
-    const computerMove = (i, j) => {
-        playerController(i, j, p2);
-        //check if winning codition met
-        roundWinningCondition();
-
-        playerTurned = true;
-    };
 
     const getMove = () => {
         if(playerTurned){
             const input = getInput(p1);
-            playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
+            markedMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
         }else{
             const input = getInput(p2);
-            computerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)));
+            markedMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
         }
     };
 
-    const getInput = (playerTurn) => {
-        return prompt(`${playerTurn.name} Move: `);
+    const getInput = (playerInput) => {
+        return prompt(`${playerInput.name} Move: `);
     };
 
     const roundWinningCondition = () => {
@@ -105,20 +98,31 @@ function Gameplay () {
         if(playerTurned) {
             p1.win();
             console.log("Round Win: " + p1.name);
-            console.log("Player Score: " + p1.getScore());
+            console.log(p1.name + " Score: " + p1.getScore());
         }
         else{
             p2.win();
             console.log("Round Win: " + p2.name);
-            console.log("Player Score: " + p2.getScore());
+            console.log(p2.name + " Score: " + p2.getScore());
         }
         roundOver = true;
         
     };
 
+    const CheckGameOver = () => {
+        if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
+        {
+            gameOver = true;
+        }
+    };
+
+    const resetBoard = () => board.createBoard();
+
+    const getGameOver = () => gameOver;
+
     const displayBoard = ()=> board.getBoard();
 
-    return {board, roundOver, getMove, displayBoard};
+    return {board, roundOver, getGameOver, getMove, displayBoard};
 };
 
 (function StartGame(){
@@ -138,10 +142,7 @@ function Gameplay () {
             }
         }
     };
-    // while(!gameOver)
-    // {
-    //     playRound();
-    // }
+    playRound();
 
 })();
 
