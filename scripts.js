@@ -35,11 +35,12 @@ function Gameplay () {
     board.createBoard();
     const p1 = CreatePlayer("PLAYER", "X");
     const p2 = CreatePlayer("COMPUTER", "O");
+
     let playerTurned = true;
     let roundOver = false;
+    let gameOver = false;
     //First to reach the score wins
     const targetScore = 2;
-    const gameOver = false;
 
     const markingMove = (i, j, p) => {
         board.getBoard()[i][j] = p.marker;
@@ -105,24 +106,28 @@ function Gameplay () {
             console.log("Round Win: " + p2.name);
             console.log(p2.name + " Score: " + p2.getScore());
         }
-        roundOver = true;
-        
+        roundOver = true; 
     };
 
     const CheckGameOver = () => {
         if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
         {
             gameOver = true;
+            displayGameOverPanel();
         }
     };
 
-    const resetBoard = () => board.createBoard();
+    const resetRound = () => {
+        board.createBoard();
+        roundOver = false;
+        
+    };
 
-    // const getRoundOver = () => gameOver;
-
-    const getGameOver = () => gameOver;
-
-    const displayBoard = ()=> board.getBoard();
+    displayGameOverPanel = () => {
+        console.log("Game Winner: " + ((p1.getScore() > p2.getScore()) ? p1.name : p2.name));
+        console.log(p1.name + ": " + p1.getScore());
+        console.log(p2.name + ": " + p2.getScore());
+    };
 
     const playRound = () => {
         let RoundMinimumTurn = 9;
@@ -137,7 +142,20 @@ function Gameplay () {
         }
     };
 
-    return {playRound, displayBoard};
+    const playGame = () => {
+        CheckGameOver();
+        while(!gameOver)
+        {
+            console.log("start round");
+            resetRound();
+            playRound();
+            CheckGameOver();
+        }
+    };
+
+    const displayBoard = ()=> board.getBoard();
+
+    return {playGame, displayBoard};
 };
 
 (function StartGame(){
@@ -145,7 +163,7 @@ function Gameplay () {
     const game = Gameplay();
     console.log(game.displayBoard());
     
-    game.playRound();
+    game.playGame();
 
 })();
 
