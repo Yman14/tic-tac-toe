@@ -166,15 +166,3 @@ function Gameplay () {
     game.playGame();
 
 })();
-
-
-//Lab
-// const demo = Gameplay();
-// console.log(demo);
-// console.log(demo.getBoard());
-// demo.playerMove(1,1);
-// console.log(demo.getBoard());
-// demo.computerMove(1,2);
-// console.log(demo.getBoard());
-// demo.playerMove(2,0);
-// console.log(demo.getBoard());
