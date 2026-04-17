@@ -41,12 +41,12 @@ function Gameplay () {
     const targetScore = 2;
     const gameOver = false;
 
-    const playerController = (i, j, p) => {
+    const markingMove = (i, j, p) => {
         board.getBoard()[i][j] = p.marker;
     };
 
-    const markedMove = (i, j, player) => {
-        playerController(i, j, player);
+    const playerController = (i, j, player) => {
+        markingMove(i, j, player);
         //check if winning codition met
         roundWinningCondition();
         playerTurned = !playerTurned;
@@ -56,10 +56,10 @@ function Gameplay () {
     const getMove = () => {
         if(playerTurned){
             const input = getInput(p1);
-            markedMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
+            playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
         }else{
             const input = getInput(p2);
-            markedMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
+            playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
         }
     };
 
@@ -118,11 +118,26 @@ function Gameplay () {
 
     const resetBoard = () => board.createBoard();
 
+    // const getRoundOver = () => gameOver;
+
     const getGameOver = () => gameOver;
 
     const displayBoard = ()=> board.getBoard();
 
-    return {board, roundOver, getGameOver, getMove, displayBoard};
+    const playRound = () => {
+        let RoundMinimumTurn = 9;
+        while(!roundOver)
+        {
+            getMove();
+            RoundMinimumTurn--;
+            if(RoundMinimumTurn <= 0) {
+                roundOver = true;
+                console.log("Round Tie");
+            }
+        }
+    };
+
+    return {playRound, displayBoard};
 };
 
 (function StartGame(){
@@ -130,19 +145,7 @@ function Gameplay () {
     const game = Gameplay();
     console.log(game.displayBoard());
     
-    function playRound() {
-        let RoundMinimumTurn = 9;
-
-        while(!game.roundOver) {
-            game.getMove();
-            RoundMinimumTurn--;
-            if(RoundMinimumTurn <= 0) {
-                game.roundOver = true;
-                console.log("Round Tie");
-            }
-        }
-    };
-    playRound();
+    game.playRound();
 
 })();
 
