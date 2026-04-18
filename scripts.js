@@ -35,7 +35,7 @@ function CreatePlayer(name, marker) {
 
 
 
-function Gameplay () {
+function HandleGameplay () {
     const board = Gameboard();
     board.createBoard();
     const p1 = CreatePlayer("PLAYER", 'X');
@@ -188,11 +188,20 @@ function Gameplay () {
     return {playGame, displayBoard};
 };
 
-(function StartGame(){
+const InitiateNewGame = () => {
     console.log("Game Start!");
-    const game = Gameplay();
+    const game = HandleGameplay();
     console.log(game.displayBoard());
     
     game.playGame();
 
-})();
+};
+
+
+function PlayAgain() {
+    InitiateNewGame();
+};
+
+
+//starts game
+InitiateNewGame();
