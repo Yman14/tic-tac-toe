@@ -3,6 +3,7 @@ console.log("console is running.");
 function Gameboard() {
     const boardSize = 3;
     let board = [];
+    const defaultMarker = '-';
 
     const createBoard = () => {
         for(let i = 0; i < boardSize; i++)
@@ -10,14 +11,16 @@ function Gameboard() {
             board[i] = [];
             for(let j = 0; j < boardSize; j++)
             {
-                board[i][j] = "-";
+                board[i][j] = defaultMarker;
             }
         }
     };
 
    const getBoard = () => board;
 
-   return {boardSize, createBoard, getBoard};
+   const getDefaultMarker = () => defaultMarker;
+
+   return {boardSize, createBoard, getBoard, getDefaultMarker};
 };
 
 function CreatePlayer(name, marker) {
@@ -30,17 +33,21 @@ function CreatePlayer(name, marker) {
     return{name, marker, win, getScore};
 };
 
+
+
 function Gameplay () {
     const board = Gameboard();
     board.createBoard();
-    const p1 = CreatePlayer("PLAYER", "X");
-    const p2 = CreatePlayer("COMPUTER", "O");
+    const p1 = CreatePlayer("PLAYER", 'X');
+    const p2 = CreatePlayer("COMPUTER", 'O');
 
     let playerTurned = true;
     let roundOver = false;
     let gameOver = false;
     //First to reach the score wins
     const targetScore = 2;
+
+
 
     const markingMove = (i, j, p) => {
         board.getBoard()[i][j] = p.marker;
@@ -57,15 +64,36 @@ function Gameplay () {
     const getMove = () => {
         if(playerTurned){
             const input = getInput(p1);
+            console.log("input: " + input);
             playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
         }else{
             const input = getInput(p2);
+            console.log("input: " + input);
             playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
         }
     };
 
-    const getInput = (playerInput) => {
-        return prompt(`${playerInput.name} Move: `);
+    const getInput = (player) => {
+        const input = prompt(`${player.name} Move: `);
+        console.log("getInput: " + input);
+        if(validateInput(input)){
+            console.log("returnInput: " + input);
+            return input;
+        }
+        else{
+            return getInput(player);
+        }
+    };
+
+    //validate if the coordinates was already used
+    const validateInput = (input) =>{
+        console.log("validateInput: " + input);
+        const x = parseInt(input.charAt(0));
+        const y = parseInt(input.charAt(1));
+        if(board.getBoard()[x][y] == board.getDefaultMarker()){
+            return true;
+        }
+        return false;
     };
 
     const roundWinningCondition = () => {
@@ -81,15 +109,17 @@ function Gameplay () {
         const midHorizontal = (board.getBoard()[1][1] === board.getBoard()[1][0]) && (board.getBoard()[1][1] === board.getBoard()[1][2]);
         const midDiagionalFirst = (board.getBoard()[1][1] === board.getBoard()[0][0]) && (board.getBoard()[1][1] === board.getBoard()[2][2]);
         const midDiagionalSecond = (board.getBoard()[1][1] === board.getBoard()[0][2]) && (board.getBoard()[1][1] === board.getBoard()[2][0]);
-
-        if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != "-"))
+        //ex
+        console.log("expermient");
+        console.log(board.getBoard()[0][0] + " ---- " + board.getDefaultMarker());
+        if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != board.getDefaultMarker()))
         {
             CheckRoundOver();
         }
-        else if((lowerHorizontal || rightVertical)  && (board.getBoard()[2][2] != "-")){
+        else if((lowerHorizontal || rightVertical)  && (board.getBoard()[2][2] != board.getDefaultMarker())){
            CheckRoundOver();
         }
-        else if((midVertical || midHorizontal || midDiagionalFirst || midDiagionalSecond)  && (board.getBoard()[1][1] != "-")){
+        else if((midVertical || midHorizontal || midDiagionalFirst || midDiagionalSecond)  && (board.getBoard()[1][1] != board.getDefaultMarker())){
            CheckRoundOver();
         }
         
