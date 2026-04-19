@@ -11,4 +11,45 @@ body {
     border: 2px solid red;
     width: 100%;
     height: 100dvh;
+    display: flex;
+    flex-direction: column;
 }
+
+#app > * {
+    width: 100%;
+}
+
+.playerScore {
+    border: 2px solid blue;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.boardUI {
+   
+    border: 2px solid black;
+    height: 80%;
+}
+.playerTurnPanel {
+    border: 2px solid green;
+    height: 20%;
+}
+
+.playerScore > * {
+    width: 30%;
+    height: 70%;
+    border-radius: 25px;
+    box-shadow: 0 7px 7px #bbb;
+
+    &.p1Score {
+        background-color: lightblue;
+    };
+
+    &.p2Score {
+        background-color: lightcoral;
+    };
+}
+

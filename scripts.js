@@ -209,5 +209,24 @@ function Start() {
 //DOM
 (function RenderUI(){
     const app = document.getElementById("app");
-    app.textContent = "App object detected";
+    const playerScore = document.createElement("div");
+    const boardUI = document.createElement("div");
+    const playerTurnPanel = document.createElement("div");
+    playerScore.classList.add("playerScore");
+    boardUI.classList.add("boardUI");
+    playerTurnPanel.classList.add("playerTurnPanel");
+    app.append(playerScore, boardUI, playerTurnPanel);
+
+    //render the score
+    const renderScoreUI = () => {
+        const p1Score = document.createElement("div");
+        const p2Score = document.createElement("div");
+        p1Score.classList.add("p1Score");
+        p2Score.classList.add("p2Score");
+        playerScore.append(p1Score, p2Score);
+    };
+    renderScoreUI();
+
+    //render the board
+    //render player turn panel
 })();
