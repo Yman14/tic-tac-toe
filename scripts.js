@@ -250,6 +250,12 @@ function Start() {
 
 
     //render player turn panel
+    const renderPlayerTurnPanel = () => {
+        const turnPanel = document.createElement("div");
+        turnPanel.classList.add("turnPanel");
+        playerTurnPanel.appendChild(turnPanel);
+    };
+    renderPlayerTurnPanel();
 
 
 })();
