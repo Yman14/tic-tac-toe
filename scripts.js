@@ -228,5 +228,28 @@ function Start() {
     renderScoreUI();
 
     //render the board
+    const renderBoardUI = () => {
+        const boardContainer = document.createElement("div");
+        boardContainer.classList.add("boardContainer");
+        boardUI.appendChild(boardContainer);
+
+        //tiles
+        boardSize = Gameboard().boardSize;
+        for(let i = 0; i < boardSize; i++)
+        {
+            for(let j = 0; j < boardSize; j++)
+            {
+                const tile = document.createElement("button");
+                tile.classList.add("tile");
+                tile.classList.add(`${i}${j}`);
+                boardContainer.appendChild(tile);
+            }
+        }
+    };
+    renderBoardUI();
+
+
     //render player turn panel
+
+
 })();
