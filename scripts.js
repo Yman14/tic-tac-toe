@@ -198,10 +198,16 @@ const InitiateNewGame = () => {
 };
 
 
-function PlayAgain() {
+function Start() {
     InitiateNewGame();
 };
 
 
 //starts game
-InitiateNewGame();
+// InitiateNewGame();
+
+//DOM
+(function RenderUI(){
+    const app = document.getElementById("app");
+    app.textContent = "App object detected";
+})();
