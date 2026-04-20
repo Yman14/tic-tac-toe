@@ -53,7 +53,7 @@ function HandleGameplay () {
         board.getBoard()[i][j] = p.marker;
     };
 
-    const playerController = (i, j, player) => {
+    const playerMove = (i, j, player) => {
         markingMove(i, j, player);
         //check if winning codition met
         roundWinningCondition();
@@ -61,15 +61,15 @@ function HandleGameplay () {
     };
 
 
-    const getMove = () => {
+    const playerController = (input) => {
         if(playerTurned){
-            const input = getInput(p1);
+            // const input = getInput(p1);
             console.log("input: " + input);
-            playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
+            playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
         }else{
-            const input = getInput(p2);
+            // const input = getInput(p2);
             console.log("input: " + input);
-            playerController(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
+            playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
         }
     };
 
@@ -109,9 +109,7 @@ function HandleGameplay () {
         const midHorizontal = (board.getBoard()[1][1] === board.getBoard()[1][0]) && (board.getBoard()[1][1] === board.getBoard()[1][2]);
         const midDiagionalFirst = (board.getBoard()[1][1] === board.getBoard()[0][0]) && (board.getBoard()[1][1] === board.getBoard()[2][2]);
         const midDiagionalSecond = (board.getBoard()[1][1] === board.getBoard()[0][2]) && (board.getBoard()[1][1] === board.getBoard()[2][0]);
-        //ex
-        console.log("expermient");
-        console.log(board.getBoard()[0][0] + " ---- " + board.getDefaultMarker());
+
         if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != board.getDefaultMarker()))
         {
             CheckRoundOver();
@@ -159,11 +157,11 @@ function HandleGameplay () {
         console.log(p2.name + ": " + p2.getScore());
     };
 
-    const playRound = (x, y) => {
+    const playRound = () => {
         let RoundMinimumTurn = 9;
         while(!roundOver)
         {
-            //getMove();
+            //playerController();
             RoundMinimumTurn--;
             if(RoundMinimumTurn <= 0) {
                 roundOver = true;
@@ -174,37 +172,44 @@ function HandleGameplay () {
 
     const playGame = () => {
         CheckGameOver();
-        // while(!gameOver)
-        // {
-        //     console.log("start round");
-        //     resetRound();
-        //     playRound();
-        //     CheckGameOver();
-        // }
+        while(!gameOver)
+        {
+            console.log("start round");
+            resetRound();
+            playRound();
+            CheckGameOver();
+        }
     };
 
-    const displayBoard = ()=> board.getBoard();
+    const getBoard = ()=> board.getBoard();
 
-    return {playGame, displayBoard};
+    return {p1, p2, playerController, playGame, getBoard};
 };
 
-function InitiateNewGame() {
-    console.log("Game Start!");
-    const game = HandleGameplay();
-    console.log(game.displayBoard());
+// function InitiateNewGame() {
+//     console.log("Game Start!");
+//     const game = HandleGameplay();
+//     console.log(game.getBoard());
     
-    game.playGame();
+//     game.playGame();
 
+// };
+
+const InitiateNewGame = () => {
+    return HandleGameplay();
 };
 
 
 function Start() {
-    InitiateNewGame();
-    RenderGameStateUI();
+    const game = HandleGameplay();
+    RenderGameStateUI(game);
 };
 
+
+
+
 //DOM
-function RenderGameStateUI(){
+function RenderGameStateUI(game){
     const app = document.getElementById("app");
     app.replaceChildren();
     const gameScreen = document.createElement("div");
@@ -250,7 +255,6 @@ function RenderGameStateUI(){
     };
     renderBoardUI();
 
-
     //render player turn panel
     const renderPlayerTurnPanel = () => {
         const turnPanel = document.createElement("div");
@@ -258,6 +262,19 @@ function RenderGameStateUI(){
         playerTurnPanel.appendChild(turnPanel);
     };
     renderPlayerTurnPanel();
+
+
+    //if tile is click/press
+    const tiles = document.querySelector(".boardContainer");
+    tiles.addEventListener("click", (e) => {
+        if(e.target.classList.contains("tile")){
+            const input = e.target.classList[1];
+            game.playerController(input);
+            
+            e.target.textContent = "#";
+
+        }
+    });
 
 };
 
@@ -283,6 +300,9 @@ function RenderMenuStateUI() {
     startButton.textContent = "Start Game";
     menuScreen.appendChild(startButton);
 
-    startButton.addEventListener("click", ()=>{Start();});
+    startButton.addEventListener("click", ()=>{
+        Start();
+    });
 };
-RenderMenuStateUI();
+// RenderMenuStateUI();
+Start();
