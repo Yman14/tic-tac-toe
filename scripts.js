@@ -159,11 +159,11 @@ function HandleGameplay () {
         console.log(p2.name + ": " + p2.getScore());
     };
 
-    const playRound = () => {
+    const playRound = (x, y) => {
         let RoundMinimumTurn = 9;
         while(!roundOver)
         {
-            getMove();
+            //getMove();
             RoundMinimumTurn--;
             if(RoundMinimumTurn <= 0) {
                 roundOver = true;
@@ -174,13 +174,13 @@ function HandleGameplay () {
 
     const playGame = () => {
         CheckGameOver();
-        while(!gameOver)
-        {
-            console.log("start round");
-            resetRound();
-            playRound();
-            CheckGameOver();
-        }
+        // while(!gameOver)
+        // {
+        //     console.log("start round");
+        //     resetRound();
+        //     playRound();
+        //     CheckGameOver();
+        // }
     };
 
     const displayBoard = ()=> board.getBoard();
@@ -188,7 +188,7 @@ function HandleGameplay () {
     return {playGame, displayBoard};
 };
 
-const InitiateNewGame = () => {
+function InitiateNewGame() {
     console.log("Game Start!");
     const game = HandleGameplay();
     console.log(game.displayBoard());
@@ -200,22 +200,24 @@ const InitiateNewGame = () => {
 
 function Start() {
     InitiateNewGame();
+    RenderGameStateUI();
 };
 
-
-//starts game
-// InitiateNewGame();
-
 //DOM
-(function RenderUI(){
+function RenderGameStateUI(){
     const app = document.getElementById("app");
+    app.replaceChildren();
+    const gameScreen = document.createElement("div");
+    gameScreen.classList.add("gameScreen");
+    app.appendChild(gameScreen);
+
     const playerScore = document.createElement("div");
     const boardUI = document.createElement("div");
     const playerTurnPanel = document.createElement("div");
     playerScore.classList.add("playerScore");
     boardUI.classList.add("boardUI");
     playerTurnPanel.classList.add("playerTurnPanel");
-    app.append(playerScore, boardUI, playerTurnPanel);
+    gameScreen.append(playerScore, boardUI, playerTurnPanel);
 
     //render the score
     const renderScoreUI = () => {
@@ -257,5 +259,30 @@ function Start() {
     };
     renderPlayerTurnPanel();
 
+};
 
-})();
+function RenderMenuStateUI() {
+    const app = document.getElementById("app");
+    app.replaceChildren();
+
+    const menuScreen = document.createElement("div");
+    menuScreen.classList.add("menuScreen");
+    app.appendChild(menuScreen);
+
+    //title
+    const startButtonText = document.createElement("h1");
+    startButtonText.classList.add("startButtonText");
+    startButtonText.textContent = "Tic Tac Toe";
+    menuScreen.appendChild(startButtonText);
+
+
+    //start Button code
+    const startButton = document.createElement("button");
+    startButton.classList.add("startButton");
+    menuScreen.appendChild(startButton);
+    startButton.textContent = "Start Game";
+    menuScreen.appendChild(startButton);
+
+    startButton.addEventListener("click", ()=>{Start();});
+};
+RenderMenuStateUI();
