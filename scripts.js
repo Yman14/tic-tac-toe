@@ -41,48 +41,20 @@ function HandleGameplay () {
     const p1 = CreatePlayer("PLAYER", 'X');
     const p2 = CreatePlayer("COMPUTER", 'O');
 
-    let playerTurned = true;
+    let activePlayer = p1;
     let roundOver = false;
     let gameOver = false;
     //First to reach the score wins
     const targetScore = 2;
 
-
-
-    const markingMove = (i, j, p) => {
-        board.getBoard()[i][j] = p.marker;
-    };
-
-    const playerMove = (i, j, player) => {
-        markingMove(i, j, player);
-        //check if winning codition met
-        roundWinningCondition();
-        playerTurned = !playerTurned;
-    };
-
-
+    //player input
     const playerController = (input) => {
-        if(playerTurned){
-            // const input = getInput(p1);
-            console.log("input: " + input);
-            playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p1);
-        }else{
-            // const input = getInput(p2);
-            console.log("input: " + input);
-            playerMove(parseInt(input.charAt(0)), parseInt(input.charAt(1)), p2);
-        }
-    };
+        const x = parseInt(input.charAt(0));
+        const y = parseInt(input.charAt(1));
+        board.getBoard()[x][y] = activePlayer.marker;
 
-    const getInput = (player) => {
-        const input = prompt(`${player.name} Move: `);
-        console.log("getInput: " + input);
-        if(validateInput(input)){
-            console.log("returnInput: " + input);
-            return input;
-        }
-        else{
-            return getInput(player);
-        }
+        checkRoundWinCondition();
+        activePlayer = (activePlayer == p1) ? p2 : p1;
     };
 
     //validate if the coordinates was already used
@@ -96,7 +68,7 @@ function HandleGameplay () {
         return false;
     };
 
-    const roundWinningCondition = () => {
+    const checkRoundWinCondition = () => {
         //MANUAL WINNNING CONDITIONS
         //first corner base check
         const upperHorizontal = (board.getBoard()[0][0] === board.getBoard()[0][1]) && (board.getBoard()[0][1] === board.getBoard()[0][2]);
@@ -112,29 +84,23 @@ function HandleGameplay () {
 
         if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != board.getDefaultMarker()))
         {
-            CheckRoundOver();
+            return true;
         }
         else if((lowerHorizontal || rightVertical)  && (board.getBoard()[2][2] != board.getDefaultMarker())){
-           CheckRoundOver();
+           return true;
         }
         else if((midVertical || midHorizontal || midDiagionalFirst || midDiagionalSecond)  && (board.getBoard()[1][1] != board.getDefaultMarker())){
-           CheckRoundOver();
+           return true;
         }
-        
+
+        return false; 
     };
 
-    const CheckRoundOver = () => {
-        if(playerTurned) {
-            p1.win();
-            console.log("Round Win: " + p1.name);
-            console.log(p1.name + " Score: " + p1.getScore());
-        }
-        else{
-            p2.win();
-            console.log("Round Win: " + p2.name);
-            console.log(p2.name + " Score: " + p2.getScore());
-        }
-        roundOver = true; 
+    const updateScore = () => {
+        activePlayer.win();
+        console.log("Round Win: " + activePlayer.name);
+        console.log(activePlayer.name + " Score: " + activePlayer.getScore());
+        resetRound();
     };
 
     const CheckGameOver = () => {
@@ -157,19 +123,6 @@ function HandleGameplay () {
         console.log(p2.name + ": " + p2.getScore());
     };
 
-    const playRound = () => {
-        let RoundMinimumTurn = 9;
-        while(!roundOver)
-        {
-            //playerController();
-            RoundMinimumTurn--;
-            if(RoundMinimumTurn <= 0) {
-                roundOver = true;
-                console.log("Round Tie");
-            }
-        }
-    };
-
     const playGame = () => {
         CheckGameOver();
         while(!gameOver)
@@ -182,34 +135,37 @@ function HandleGameplay () {
     };
 
     const getBoard = ()=> board.getBoard();
+    const getActivePlayer = () => activePlayer;
 
-    return {p1, p2, playerController, playGame, getBoard};
+    return {playerController, getActivePlayer, checkRoundWinCondition, updateScore, playGame, getBoard};
 };
-
-// function InitiateNewGame() {
-//     console.log("Game Start!");
-//     const game = HandleGameplay();
-//     console.log(game.getBoard());
-    
-//     game.playGame();
-
-// };
-
-const InitiateNewGame = () => {
-    return HandleGameplay();
-};
-
 
 function Start() {
     const game = HandleGameplay();
-    RenderGameStateUI(game);
+    RenderGameStateUI();
+    GameController(game);
 };
 
 
 
 
 //DOM
-function RenderGameStateUI(game){
+function GameController(game) {
+    //if tile is click/press
+    const tiles = document.querySelector(".boardContainer");
+    tiles.addEventListener("click", (e) => {
+        if(e.target.classList.contains("tile")){
+            const input = e.target.classList[1];
+            game.playerController(input);
+            e.target.textContent = game.getActivePlayer().marker;
+
+        }
+    });
+};
+
+
+//Game Screen
+function RenderGameStateUI(){
     const app = document.getElementById("app");
     app.replaceChildren();
     const gameScreen = document.createElement("div");
@@ -263,21 +219,10 @@ function RenderGameStateUI(game){
     };
     renderPlayerTurnPanel();
 
-
-    //if tile is click/press
-    const tiles = document.querySelector(".boardContainer");
-    tiles.addEventListener("click", (e) => {
-        if(e.target.classList.contains("tile")){
-            const input = e.target.classList[1];
-            game.playerController(input);
-            
-            e.target.textContent = "#";
-
-        }
-    });
-
 };
 
+
+//Menu Screen
 function RenderMenuStateUI() {
     const app = document.getElementById("app");
     app.replaceChildren();
