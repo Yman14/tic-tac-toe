@@ -62,80 +62,90 @@ body {
         font-size: 6rem;
         text-shadow: 10px 10px 1px lightsalmon;
         text-align: center;
-    }
+    };
 }
 
 
 #app .gameScreen {
     display: flex;
     flex-direction: column;
-}
-
-.playerScore {
-    border: 2px solid blue;
-    height: 20%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
-
-.boardUI {
-   
-    border: 2px solid black;
-    height: 80%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.playerTurnPanel {
-    border: 2px solid green;
-    height: 20%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.playerScore > * {
-    width: 30%;
-    height: 70%;
-    border-radius: 25px;
-    box-shadow: 0 7px 7px #bbb;
-
-    &.p1Score {
-        background-color: lightblue;
+    & .playerScore {
+        border: 2px solid blue;
+        height: 20%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
     };
 
-    &.p2Score {
-        background-color: lightcoral;
+    & .boardUI {
+    
+        border: 2px solid black;
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    };
+
+    & .playerTurnPanel {
+        border: 2px solid green;
+        height: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    };
+
+    & .playerScore > * {
+        width: 150px;
+        height: 80px;
+        border-radius: 25px;
+        box-shadow: 0 7px 7px #bbb;
+
+        &.p1Score {
+            background-color: lightblue;
+        };
+
+        &.p2Score {
+            background-color: lightcoral;
+        };
+
+        & .p1ScoreText, & .p2ScoreText {
+                margin: 0;
+                padding: 0;
+                font-size: 70px;
+                font-weight: 700;
+                text-align: center;
+            };
+    };
+
+    & .boardUI .boardContainer {
+        width: 50%;
+        height: 80%;
+        /* display: flex;
+        flex-wrap: wrap;
+        justify-content: center; */
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+
+        & .tile {
+            border: 2px solid var(--bg-color);
+            background-color: var(--tile-color);
+
+            /* text */
+            color: #fff;
+            font-size: var(--tile-textSize);
+        }
+    };
+
+    &  .playerTurnPanel .turnPanel {
+        width: 30%;
+        height: 70%;
+        border-radius: 25px;
+        box-shadow: 0 7px 7px #bbb;
+        background-color: lightgreen;
     };
 }
 
-.boardUI .boardContainer {
-    width: 50%;
-    height: 80%;
-    /* display: flex;
-    flex-wrap: wrap;
-    justify-content: center; */
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(3, minmax(0, 1fr));
 
-    & .tile {
-        border: 2px solid var(--bg-color);
-        background-color: var(--tile-color);
-
-        /* text */
-        color: #fff;
-        font-size: var(--tile-textSize);
-    }
-}
-
-.playerTurnPanel .turnPanel {
-    width: 30%;
-    height: 70%;
-    border-radius: 25px;
-    box-shadow: 0 7px 7px #bbb;
-    background-color: lightgreen;
-}
 

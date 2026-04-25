@@ -38,8 +38,8 @@ function CreatePlayer(name, marker) {
 function HandleGameplay () {
     const board = Gameboard();
     board.createBoard();
-    const p1 = CreatePlayer("PLAYER", 'X');
-    const p2 = CreatePlayer("COMPUTER", 'O');
+    const p1 = CreatePlayer("PLAYER 1", 'X');
+    const p2 = CreatePlayer("PLAYER 2", 'O');
 
     let activePlayer = p1;
     let roundOver = false;
@@ -52,9 +52,7 @@ function HandleGameplay () {
         const x = parseInt(input.charAt(0));
         const y = parseInt(input.charAt(1));
         board.getBoard()[x][y] = activePlayer.marker;
-
-        checkRoundWinCondition();
-        activePlayer = (activePlayer == p1) ? p2 : p1;
+        // checkRoundWinCondition();
     };
 
     //validate if the coordinates was already used
@@ -100,7 +98,11 @@ function HandleGameplay () {
         activePlayer.win();
         console.log("Round Win: " + activePlayer.name);
         console.log(activePlayer.name + " Score: " + activePlayer.getScore());
-        resetRound();
+        // resetRound();
+    };
+
+    const switchPlayer = () => {
+        activePlayer = (activePlayer == p1) ? p2 : p1;
     };
 
     const CheckGameOver = () => {
@@ -137,7 +139,7 @@ function HandleGameplay () {
     const getBoard = ()=> board.getBoard();
     const getActivePlayer = () => activePlayer;
 
-    return {playerController, getActivePlayer, checkRoundWinCondition, updateScore, playGame, getBoard};
+    return {p1, p2, playerController, getActivePlayer, checkRoundWinCondition, updateScore, switchPlayer, playGame, getBoard};
 };
 
 function Start() {
@@ -157,8 +159,13 @@ function GameController(game) {
         if(e.target.classList.contains("tile")){
             const input = e.target.classList[1];
             game.playerController(input);
-            e.target.textContent = game.getActivePlayer().marker;
-
+            e.target.textContent = game.getActivePlayer().marker;   
+            //
+            if(game.checkRoundWinCondition()){
+                game.updateScore();
+                RenderGameStateUI().renderScoreUI(game.p1, game.p2);
+            }
+            game.switchPlayer();
         }
     });
 };
@@ -181,12 +188,37 @@ function RenderGameStateUI(){
     gameScreen.append(playerScore, boardUI, playerTurnPanel);
 
     //render the score
-    const renderScoreUI = () => {
-        const p1Score = document.createElement("div");
-        const p2Score = document.createElement("div");
-        p1Score.classList.add("p1Score");
-        p2Score.classList.add("p2Score");
-        playerScore.append(p1Score, p2Score);
+    const renderScoreUI = (p1, p2) => {
+        const p1Score = document.querySelector(".p1Score");
+        const p2Score = document.querySelector(".p2Score");
+
+        if(document.querySelector(".p1Score") == null)
+        {
+            const p1Score = document.createElement("div");
+            const p2Score = document.createElement("div");
+            p1Score.classList.add("p1Score");
+            p2Score.classList.add("p2Score");
+            playerScore.append(p1Score, p2Score);
+
+            const p1ScoreText = document.createElement("p");
+            const p2ScoreText = document.createElement("p");
+            p1ScoreText.classList.add("p1ScoreText");
+            p2ScoreText.classList.add("p2ScoreText");
+            p1Score.appendChild(p1ScoreText);
+            p2Score.appendChild(p2ScoreText);
+            p1ScoreText.textContent = "0";
+            p2ScoreText.textContent = "0";
+        }
+
+        const updateScore = () => {
+            if(p1 != null) {
+                const p1ScoreText = document.querySelector(".p1ScoreText");
+                const p2ScoreText = document.querySelector(".p2ScoreText");
+                p1ScoreText.textContent = p1.getScore();
+                p2ScoreText.textContent = p2.getScore();
+            }
+        };
+        updateScore();
     };
     renderScoreUI();
 
@@ -218,6 +250,8 @@ function RenderGameStateUI(){
         playerTurnPanel.appendChild(turnPanel);
     };
     renderPlayerTurnPanel();
+
+    return {renderScoreUI};
 
 };
 
