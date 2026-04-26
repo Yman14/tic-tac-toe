@@ -45,7 +45,7 @@ function HandleGameplay () {
     let roundOver = false;
     let gameOver = false;
     //First to reach the score wins
-    const targetScore = 2;
+    const targetScore = 3;
 
     //player input
     const playerController = (input) => {
@@ -105,7 +105,7 @@ function HandleGameplay () {
         activePlayer = (activePlayer == p1) ? p2 : p1;
     };
 
-    const CheckGameOver = () => {
+    const checkGameOver = () => {
         if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
         {
             gameOver = true;
@@ -126,20 +126,24 @@ function HandleGameplay () {
     };
 
     const playGame = () => {
-        CheckGameOver();
+        checkGameOver();
         while(!gameOver)
         {
             console.log("start round");
             resetRound();
             playRound();
-            CheckGameOver();
+            checkGameOver();
         }
     };
 
     const getBoard = ()=> board.getBoard();
     const getActivePlayer = () => activePlayer;
+    const getTargetScore = () => targetScore;
 
-    return {p1, p2, playerController, getActivePlayer, checkRoundWinCondition, updateScore, switchPlayer, resetRound, getBoard};
+    return {p1, p2, playerController, 
+            getActivePlayer, getTargetScore, getBoard, 
+            checkRoundWinCondition, checkGameOver, 
+            updateScore, switchPlayer, resetRound};
 };
 
 function Start() {
@@ -167,7 +171,11 @@ function GameController(game, ui) {
             //check if someone won
             if(game.checkRoundWinCondition()){
                 game.updateScore();
-                ui.updateScoreUI(game.p1, game.p2);
+                ui.updateScoreUI(game.p1, game.p2, game.getTargetScore());
+
+                //check if the game is over
+                game.checkGameOver();
+
                 //update this only when theres a condition (*not yet implemented)
                 game.resetRound();
                 ui.updateBoardUI();
@@ -260,12 +268,12 @@ function RenderGameStateUI(){
     renderPlayerTurnPanel();
 
     //update ui
-    const updateScoreUI = (p1, p2) => {
+    const updateScoreUI = (p1, p2, targetScore) => {
         if(p1 != null && p2 != null) {
             const p1ScoreText = document.querySelector(".p1ScoreText");
             const p2ScoreText = document.querySelector(".p2ScoreText");
-            p1ScoreText.textContent = p1.getScore();
-            p2ScoreText.textContent = p2.getScore();
+            p1ScoreText.textContent = `${p1.getScore()}/${targetScore}`;
+            p2ScoreText.textContent = `${p2.getScore()}/${targetScore}`;
         }
     };
     const updateBoardUI = () => {
