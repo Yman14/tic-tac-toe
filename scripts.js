@@ -40,12 +40,11 @@ function HandleGameplay () {
     board.createBoard();
     const p1 = CreatePlayer("PLAYER-1", 'X');
     const p2 = CreatePlayer("PLAYER-2", 'O');
-
     let activePlayer = p1;
-    let roundOver = false;
-    let gameOver = false;
+
     //First to reach the score wins
     const targetScore = 3;
+
 
     //player input
     const playerController = (input) => {
@@ -94,23 +93,21 @@ function HandleGameplay () {
         return false; 
     };
 
+    const checkGameOver = () => {
+        if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
+        {
+            displayGameOverPanel();
+            return true;
+        }
+
+        return false;
+    };
+
     const updateScore = () => {
         activePlayer.win();
         console.log("Round Win: " + activePlayer.name);
         console.log(activePlayer.name + " Score: " + activePlayer.getScore());
         // resetRound();
-    };
-
-    const switchPlayer = () => {
-        activePlayer = (activePlayer == p1) ? p2 : p1;
-    };
-
-    const checkGameOver = () => {
-        if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
-        {
-            gameOver = true;
-            displayGameOverPanel();
-        }
     };
 
     const resetRound = () => {
@@ -119,21 +116,15 @@ function HandleGameplay () {
         
     };
 
+    const switchPlayer = () => {
+        activePlayer = (activePlayer == p1) ? p2 : p1;
+    };
+
+
     displayGameOverPanel = () => {
         console.log("Game Winner: " + ((p1.getScore() > p2.getScore()) ? p1.name : p2.name));
         console.log(p1.name + ": " + p1.getScore());
         console.log(p2.name + ": " + p2.getScore());
-    };
-
-    const playGame = () => {
-        checkGameOver();
-        while(!gameOver)
-        {
-            console.log("start round");
-            resetRound();
-            playRound();
-            checkGameOver();
-        }
     };
 
     const getBoard = ()=> board.getBoard();
@@ -167,25 +158,30 @@ function GameController(game, ui) {
             //game logic calculation
             game.playerController(input);
             //mark the tile ui
-            e.target.textContent = game.getActivePlayer().marker;   
+            e.target.textContent = game.getActivePlayer().marker;  
+
             //check if someone won
             if(game.checkRoundWinCondition()){
                 game.updateScore();
                 ui.updateScoreUI(game.p1, game.p2, game.getTargetScore());
-
-                //check if the game is over
-                game.checkGameOver();
-
                 //update this only when theres a condition (*not yet implemented)
                 game.resetRound();
                 ui.updateBoardUI();
             }
+
+            //check if the game is over
+            if(game.checkGameOver()){
+                RenderGameOverStateUI();
+            }
+
             //switch player active
             game.switchPlayer();
             ui.updatePlayerTurnPanelUI(game.getActivePlayer().name);
         }
     });
 };
+
+
 
 
 //Game Screen
@@ -267,6 +263,7 @@ function RenderGameStateUI(){
     };
     renderPlayerTurnPanel();
 
+
     //update ui
     const updateScoreUI = (p1, p2, targetScore) => {
         if(p1 != null && p2 != null) {
@@ -317,7 +314,29 @@ function RenderMenuStateUI() {
         Start();
     });
 };
-// RenderMenuStateUI();
+
+
+//Game Over Screen
+function RenderGameOverStateUI() {
+    const gameScreen = document.querySelector(".gameScreen");
+    const gameOverScreen = document.createElement("div");
+    gameOverScreen.classList.add("gameOverScreen");
+    gameScreen.appendChild(gameOverScreen);
+
+    const gameOverScreenText = document.createElement("p");
+    gameOverScreenText.classList.add("gameOverScreenText");
+    gameOverScreenText.textContent = "GAME OVER 0_0";
+
+    const gameOverScreenButton = document.createElement("button");
+    gameOverScreenButton.classList.add("gameOverScreenButton");
+    gameOverScreenButton.textContent = "PLAY AGAIN :)";
+
+    gameOverScreen.append(gameOverScreenText, gameOverScreenButton);
+
+    gameOverScreenButton.addEventListener("click", () => {
+        Start();
+    });
+}
 
 
 
