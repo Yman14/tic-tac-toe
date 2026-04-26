@@ -144,15 +144,15 @@ function HandleGameplay () {
 
 function Start() {
     const game = HandleGameplay();
-    RenderGameStateUI();
-    GameController(game);
+    const ui = RenderGameStateUI();
+    GameController(game, ui);
 };
 
 
 
 
 //DOM
-function GameController(game) {
+function GameController(game, ui) {
     //if tile is click/press
     const tiles = document.querySelector(".boardContainer");
     tiles.addEventListener("click", (e) => {
@@ -166,7 +166,9 @@ function GameController(game) {
             //check if someone won
             if(game.checkRoundWinCondition()){
                 game.updateScore();
-                updateScoreUI(game.p1, game.p2);
+                ui.updateScoreUI(game.p1, game.p2);
+                //update this only when theres a condition (*not yet implemented)
+                ui.updateBoardUI();
             }
             //switch player active
             game.switchPlayer();
@@ -213,10 +215,18 @@ function RenderGameStateUI(){
     renderScoreUI();
 
     //render the board
-    const renderBoardUI = () => {
-        const boardContainer = document.createElement("div");
-        boardContainer.classList.add("boardContainer");
-        boardUI.appendChild(boardContainer);
+    const renderBoardUI = (update) => {
+        let boardContainer;
+        if(update == null)
+        {
+            boardContainer = document.createElement("div");
+            boardContainer.classList.add("boardContainer");
+            boardUI.appendChild(boardContainer);
+        }
+        else{
+            boardContainer = document.querySelector(".boardContainer");
+            boardContainer.replaceChildren();
+        }
 
         //tiles
         boardSize = Gameboard().boardSize;
@@ -241,18 +251,23 @@ function RenderGameStateUI(){
     };
     renderPlayerTurnPanel();
 
-    return {renderScoreUI};
+    //update ui
+    const updateScoreUI = (p1, p2) => {
+        if(p1 != null && p2 != null) {
+            const p1ScoreText = document.querySelector(".p1ScoreText");
+            const p2ScoreText = document.querySelector(".p2ScoreText");
+            p1ScoreText.textContent = p1.getScore();
+            p2ScoreText.textContent = p2.getScore();
+        }
+    };
+    const updateBoardUI = () => {
+        renderBoardUI(true);
+    };
 
-};
 
-//update score ui
-function updateScoreUI(p1, p2) {
-    if(p1 != null && p2 != null) {
-        const p1ScoreText = document.querySelector(".p1ScoreText");
-        const p2ScoreText = document.querySelector(".p2ScoreText");
-        p1ScoreText.textContent = p1.getScore();
-        p2ScoreText.textContent = p2.getScore();
-    }
+
+    return {updateScoreUI, updateBoardUI, renderPlayerTurnPanel};
+
 };
 
 
