@@ -139,11 +139,12 @@ function HandleGameplay () {
     const getBoard = ()=> board.getBoard();
     const getActivePlayer = () => activePlayer;
 
-    return {p1, p2, playerController, getActivePlayer, checkRoundWinCondition, updateScore, switchPlayer, playGame, getBoard};
+    return {p1, p2, playerController, getActivePlayer, checkRoundWinCondition, updateScore, switchPlayer, resetRound, getBoard};
 };
 
 function Start() {
     const game = HandleGameplay();
+    console.log(game.getBoard());
     const ui = RenderGameStateUI();
     GameController(game, ui);
 };
@@ -168,6 +169,7 @@ function GameController(game, ui) {
                 game.updateScore();
                 ui.updateScoreUI(game.p1, game.p2);
                 //update this only when theres a condition (*not yet implemented)
+                game.resetRound();
                 ui.updateBoardUI();
             }
             //switch player active
