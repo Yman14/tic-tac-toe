@@ -38,8 +38,8 @@ function CreatePlayer(name, marker) {
 function HandleGameplay () {
     const board = Gameboard();
     board.createBoard();
-    const p1 = CreatePlayer("PLAYER 1", 'X');
-    const p2 = CreatePlayer("PLAYER 2", 'O');
+    const p1 = CreatePlayer("PLAYER-1", 'X');
+    const p2 = CreatePlayer("PLAYER-2", 'O');
 
     let activePlayer = p1;
     let roundOver = false;
@@ -172,6 +172,7 @@ function GameController(game, ui) {
             }
             //switch player active
             game.switchPlayer();
+            ui.updatePlayerTurnPanelUI(game.getActivePlayer().name);
         }
     });
 };
@@ -248,6 +249,11 @@ function RenderGameStateUI(){
         const turnPanel = document.createElement("div");
         turnPanel.classList.add("turnPanel");
         playerTurnPanel.appendChild(turnPanel);
+        
+        const turnPanelText = document.createElement("p");
+        turnPanelText.classList.add("turnPanelText");
+        turnPanelText.textContent = "PLAYER TURN";
+        turnPanel.appendChild(turnPanelText);
     };
     renderPlayerTurnPanel();
 
@@ -263,10 +269,13 @@ function RenderGameStateUI(){
     const updateBoardUI = () => {
         renderBoardUI(true);
     };
+    const updatePlayerTurnPanelUI = (activePlayer) => {
+        document.querySelector(".turnPanel").style.backgroundColor = `var(--${activePlayer}-color)`;
+        document.querySelector(".turnPanelText").textContent = activePlayer;
 
+    };
 
-
-    return {updateScoreUI, updateBoardUI, renderPlayerTurnPanel};
+    return {updateScoreUI, updateBoardUI, updatePlayerTurnPanelUI};
 
 };
 
