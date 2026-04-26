@@ -157,14 +157,18 @@ function GameController(game) {
     const tiles = document.querySelector(".boardContainer");
     tiles.addEventListener("click", (e) => {
         if(e.target.classList.contains("tile")){
+            //get the coordinates based on the 2nd class name
             const input = e.target.classList[1];
+            //game logic calculation
             game.playerController(input);
+            //mark the tile ui
             e.target.textContent = game.getActivePlayer().marker;   
-            //
+            //check if someone won
             if(game.checkRoundWinCondition()){
                 game.updateScore();
-                RenderGameStateUI().renderScoreUI(game.p1, game.p2);
+                updateScoreUI(game.p1, game.p2);
             }
+            //switch player active
             game.switchPlayer();
         }
     });
@@ -173,6 +177,8 @@ function GameController(game) {
 
 //Game Screen
 function RenderGameStateUI(){
+    console.log("Render Game State UI");
+
     const app = document.getElementById("app");
     app.replaceChildren();
     const gameScreen = document.createElement("div");
@@ -188,37 +194,21 @@ function RenderGameStateUI(){
     gameScreen.append(playerScore, boardUI, playerTurnPanel);
 
     //render the score
-    const renderScoreUI = (p1, p2) => {
-        const p1Score = document.querySelector(".p1Score");
-        const p2Score = document.querySelector(".p2Score");
+    const renderScoreUI = () => {
+        const p1Score = document.createElement("div");
+        const p2Score = document.createElement("div");
+        p1Score.classList.add("p1Score");
+        p2Score.classList.add("p2Score");
+        playerScore.append(p1Score, p2Score);
 
-        if(document.querySelector(".p1Score") == null)
-        {
-            const p1Score = document.createElement("div");
-            const p2Score = document.createElement("div");
-            p1Score.classList.add("p1Score");
-            p2Score.classList.add("p2Score");
-            playerScore.append(p1Score, p2Score);
-
-            const p1ScoreText = document.createElement("p");
-            const p2ScoreText = document.createElement("p");
-            p1ScoreText.classList.add("p1ScoreText");
-            p2ScoreText.classList.add("p2ScoreText");
-            p1Score.appendChild(p1ScoreText);
-            p2Score.appendChild(p2ScoreText);
-            p1ScoreText.textContent = "0";
-            p2ScoreText.textContent = "0";
-        }
-
-        const updateScore = () => {
-            if(p1 != null) {
-                const p1ScoreText = document.querySelector(".p1ScoreText");
-                const p2ScoreText = document.querySelector(".p2ScoreText");
-                p1ScoreText.textContent = p1.getScore();
-                p2ScoreText.textContent = p2.getScore();
-            }
-        };
-        updateScore();
+        const p1ScoreText = document.createElement("p");
+        const p2ScoreText = document.createElement("p");
+        p1ScoreText.classList.add("p1ScoreText");
+        p2ScoreText.classList.add("p2ScoreText");
+        p1Score.appendChild(p1ScoreText);
+        p2Score.appendChild(p2ScoreText);
+        p1ScoreText.textContent = "0";
+        p2ScoreText.textContent = "0";
     };
     renderScoreUI();
 
@@ -255,6 +245,16 @@ function RenderGameStateUI(){
 
 };
 
+//update score ui
+function updateScoreUI(p1, p2) {
+    if(p1 != null && p2 != null) {
+        const p1ScoreText = document.querySelector(".p1ScoreText");
+        const p2ScoreText = document.querySelector(".p2ScoreText");
+        p1ScoreText.textContent = p1.getScore();
+        p2ScoreText.textContent = p2.getScore();
+    }
+};
+
 
 //Menu Screen
 function RenderMenuStateUI() {
@@ -284,4 +284,7 @@ function RenderMenuStateUI() {
     });
 };
 // RenderMenuStateUI();
+
+
+
 Start();
