@@ -1,10 +1,10 @@
 console.log("console is running.");
 
+//LOGIC
 function Gameboard() {
     const boardSize = 3;
     let board = [];
     const defaultMarker = '-';
-
     const createBoard = () => {
         for(let i = 0; i < boardSize; i++)
         {
@@ -15,14 +15,10 @@ function Gameboard() {
             }
         }
     };
-
    const getBoard = () => board;
-
    const getDefaultMarker = () => defaultMarker;
-
    return {boardSize, createBoard, getBoard, getDefaultMarker};
 };
-
 function CreatePlayer(name, marker) {
     this.name = name;
     this.marker = marker;
@@ -32,26 +28,20 @@ function CreatePlayer(name, marker) {
     const getScore = () => score;
     return{name, marker, win, getScore};
 };
-
-
-
 function HandleGameplay () {
     const board = Gameboard();
     board.createBoard();
     const p1 = CreatePlayer("PLAYER-1", 'X');
     const p2 = CreatePlayer("PLAYER-2", 'O');
     let activePlayer = p1;
-
     //First to reach the score wins
-    const targetScore = 3;
-
+    const targetScore = 2;
 
     //player input
-    const playerController = (input) => {
+    const loadPosition = (input) => {
         const x = parseInt(input.charAt(0));
         const y = parseInt(input.charAt(1));
         board.getBoard()[x][y] = activePlayer.marker;
-        // checkRoundWinCondition();
     };
 
     //validate if the coordinates was already used
@@ -131,59 +121,15 @@ function HandleGameplay () {
     const getActivePlayer = () => activePlayer;
     const getTargetScore = () => targetScore;
 
-    return {p1, p2, playerController, 
+    return {p1, p2, loadPosition, 
             getActivePlayer, getTargetScore, getBoard, 
             checkRoundWinCondition, checkGameOver, 
             updateScore, switchPlayer, resetRound};
 };
 
-function Start() {
-    const game = HandleGameplay();
-    console.log(game.getBoard());
-    const ui = RenderGameStateUI();
-    GameController(game, ui);
-};
 
 
-
-
-//DOM
-function GameController(game, ui) {
-    //if tile is click/press
-    const tiles = document.querySelector(".boardContainer");
-    tiles.addEventListener("click", (e) => {
-        if(e.target.classList.contains("tile")){
-            //get the coordinates based on the 2nd class name
-            const input = e.target.classList[1];
-            //game logic calculation
-            game.playerController(input);
-            //mark the tile ui
-            e.target.textContent = game.getActivePlayer().marker;  
-
-            //check if someone won
-            if(game.checkRoundWinCondition()){
-                game.updateScore();
-                ui.updateScoreUI(game.p1, game.p2, game.getTargetScore());
-                //update this only when theres a condition (*not yet implemented)
-                game.resetRound();
-                ui.updateBoardUI();
-            }
-
-            //check if the game is over
-            if(game.checkGameOver()){
-                RenderGameOverStateUI();
-            }
-
-            //switch player active
-            game.switchPlayer();
-            ui.updatePlayerTurnPanelUI(game.getActivePlayer().name);
-        }
-    });
-};
-
-
-
-
+//DOM UI
 //Game Screen
 function RenderGameStateUI(){
     console.log("Render Game State UI");
@@ -197,10 +143,15 @@ function RenderGameStateUI(){
     const playerScore = document.createElement("div");
     const boardUI = document.createElement("div");
     const playerTurnPanel = document.createElement("div");
+    const quitButton = document.createElement("button");
     playerScore.classList.add("playerScore");
     boardUI.classList.add("boardUI");
     playerTurnPanel.classList.add("playerTurnPanel");
-    gameScreen.append(playerScore, boardUI, playerTurnPanel);
+    quitButton.classList.add("quitButton");
+    gameScreen.append(playerScore, boardUI, playerTurnPanel, quitButton);
+
+    //quitbutton ui
+    quitButton.textContent = "XXX";
 
     //render the score
     const renderScoreUI = () => {
@@ -263,7 +214,6 @@ function RenderGameStateUI(){
     };
     renderPlayerTurnPanel();
 
-
     //update ui
     const updateScoreUI = (p1, p2, targetScore) => {
         if(p1 != null && p2 != null) {
@@ -285,8 +235,6 @@ function RenderGameStateUI(){
     return {updateScoreUI, updateBoardUI, updatePlayerTurnPanelUI};
 
 };
-
-
 //Menu Screen
 function RenderMenuStateUI() {
     const app = document.getElementById("app");
@@ -311,11 +259,9 @@ function RenderMenuStateUI() {
     menuScreen.appendChild(startButton);
 
     startButton.addEventListener("click", ()=>{
-        Start();
+        StartGame();
     });
 };
-
-
 //Game Over Screen
 function RenderGameOverStateUI() {
     const gameScreen = document.querySelector(".gameScreen");
@@ -334,10 +280,82 @@ function RenderGameOverStateUI() {
     gameOverScreen.append(gameOverScreenText, gameOverScreenButton);
 
     gameOverScreenButton.addEventListener("click", () => {
-        Start();
+        StartGame();
     });
-}
+};
 
 
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
 
-Start();
+
+//The game
+let isGameActive = false;
+
+//the game manager that manage the ui and logic
+function StartGame() {
+    //game running log
+    // setInterval(() => {
+    //     console.log("Game Logic Heartbeat: ", performance.now());
+    // }, 2000); 
+
+    isGameActive = true;
+    //logic and ui data
+    let logic = HandleGameplay();
+    let ui = RenderGameStateUI();
+    
+    //kill switch
+    const controller = new AbortController();
+    const{ signal } = controller;
+
+    //if tile is click/press
+    const tiles = document.querySelector(".boardContainer");
+    tiles.addEventListener("click", (e) => {
+        if(!isGameActive){
+            return;
+        }
+
+        if(e.target.classList.contains("tile")){
+            //get the coordinates based on the 2nd class name
+            const input = e.target.classList[1];
+            //game logic calculation
+            logic.loadPosition(input);
+            //mark the tile ui
+            e.target.textContent = logic.getActivePlayer().marker;  
+
+            //check if someone won
+            if(logic.checkRoundWinCondition()){
+                logic.updateScore();
+                ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
+                //update this only when theres a condition (*not yet implemented)
+                logic.resetRound();
+                ui.updateBoardUI();
+            }
+
+            //check if the game is over
+            if(logic.checkGameOver()){
+                controller.abort();
+                RenderGameOverStateUI();
+            }
+
+            //switch player active
+            logic.switchPlayer();
+            ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
+        }
+    }, { signal });
+
+    //if quit button is pressed
+    const quitButton = document.querySelector(".quitButton");
+    quitButton.addEventListener("click", () => { 
+        isGameActive = false;
+        logic = null;
+        ui = null;
+        controller.abort();
+        console.log("game active off");
+        RenderMenuStateUI();
+    }, { signal });
+};
+
+//Show menu
+RenderMenuStateUI();
