@@ -38,21 +38,19 @@ function HandleGameplay () {
     const targetScore = 2;
 
     //player input
-    const loadPosition = (input) => {
-        const x = parseInt(input.charAt(0));
-        const y = parseInt(input.charAt(1));
+    const loadPosition = (x, y) => {
         board.getBoard()[x][y] = activePlayer.marker;
     };
 
     //validate if the coordinates was already used
     const validateInput = (input) =>{
-        console.log("validateInput: " + input);
         const x = parseInt(input.charAt(0));
         const y = parseInt(input.charAt(1));
+        console.log("validateInput: " + x + y);
         if(board.getBoard()[x][y] == board.getDefaultMarker()){
-            return true;
+            return {isValid: true, x,y};
         }
-        return false;
+        return {isValid: false};
     };
 
     const checkRoundWinCondition = () => {
@@ -123,7 +121,7 @@ function HandleGameplay () {
 
     return {p1, p2, loadPosition, 
             getActivePlayer, getTargetScore, getBoard, 
-            checkRoundWinCondition, checkGameOver, 
+            validateInput, checkRoundWinCondition, checkGameOver, 
             updateScore, switchPlayer, resetRound};
 };
 
@@ -319,8 +317,11 @@ function StartGame() {
         if(e.target.classList.contains("tile")){
             //get the coordinates based on the 2nd class name
             const input = e.target.classList[1];
-            //game logic calculation
-            logic.loadPosition(input);
+
+            //game logic calculation and mark coordinates
+            const processedInput = logic.validateInput(input);
+            if(!processedInput.isValid) return;
+            logic.loadPosition(processedInput.x, processedInput.y);
             //mark the tile ui
             e.target.textContent = logic.getActivePlayer().marker;  
 
