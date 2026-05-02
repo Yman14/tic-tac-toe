@@ -268,10 +268,14 @@ function RenderMenuStateUI() {
 };
 //Game Over Screen
 function RenderGameOverStateUI() {
-    const gameScreen = document.querySelector(".gameScreen");
+    const app = document.getElementById("app");
     const gameOverScreen = document.createElement("div");
     gameOverScreen.classList.add("gameOverScreen");
-    gameScreen.appendChild(gameOverScreen);
+    app.appendChild(gameOverScreen);
+
+    const gameOverScreenPanel = document.createElement("div");
+    gameOverScreenPanel.classList.add("gameOverScreenPanel");
+    gameOverScreen.appendChild(gameOverScreenPanel);
 
     const gameOverScreenText = document.createElement("p");
     gameOverScreenText.classList.add("gameOverScreenText");
@@ -281,7 +285,7 @@ function RenderGameOverStateUI() {
     gameOverScreenButton.classList.add("gameOverScreenButton");
     gameOverScreenButton.textContent = "PLAY AGAIN :)";
 
-    gameOverScreen.append(gameOverScreenText, gameOverScreenButton);
+    gameOverScreenPanel.append(gameOverScreenText, gameOverScreenButton);
 
     gameOverScreenButton.addEventListener("click", () => {
         StartGame();
