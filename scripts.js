@@ -101,7 +101,7 @@ function HandleGameplay () {
 
     const resetRound = () => {
         board.createBoard();
-        roundOver = false;
+        countTurn = 1;
         
     };
 
