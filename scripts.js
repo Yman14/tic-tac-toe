@@ -264,6 +264,7 @@ function RenderMenuStateUI() {
     //start Button code
     const startButton = document.createElement("button");
     startButton.classList.add("startButton");
+    startButton.classList.add("btnFX");
     menuScreen.appendChild(startButton);
     startButton.textContent = "Start Game";
     menuScreen.appendChild(startButton);
@@ -290,6 +291,7 @@ function RenderGameOverStateUI() {
     const gameOverScreenButton = document.createElement("button");
     gameOverScreenButton.classList.add("gameOverScreenButton");
     gameOverScreenButton.textContent = "PLAY AGAIN :)";
+    gameOverScreenButton.classList.add("btnFX");
 
     gameOverScreenPanel.append(gameOverScreenText, gameOverScreenButton);
 
