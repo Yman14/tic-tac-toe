@@ -36,6 +36,7 @@ function HandleGameplay () {
     let activePlayer = p1;
     //First to reach the score wins
     const targetScore = 2;
+    let countTurn = 1;
 
     //player input
     const loadPosition = (x, y) => {
@@ -106,6 +107,11 @@ function HandleGameplay () {
 
     const switchPlayer = () => {
         activePlayer = (activePlayer == p1) ? p2 : p1;
+        countTurn++;
+    };
+
+    const checkTie = () => {
+        return (countTurn >= 9);
     };
 
 
@@ -121,7 +127,7 @@ function HandleGameplay () {
 
     return {p1, p2, loadPosition, 
             getActivePlayer, getTargetScore, getBoard, 
-            validateInput, checkRoundWinCondition, checkGameOver, 
+            validateInput, checkRoundWinCondition, checkGameOver, checkTie, 
             updateScore, switchPlayer, resetRound};
 };
 
@@ -330,6 +336,12 @@ function StartGame() {
                 logic.updateScore();
                 ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
                 //update this only when theres a condition (*not yet implemented)
+                logic.resetRound();
+                ui.updateBoardUI();
+            }
+
+            if(logic.checkTie())
+            {
                 logic.resetRound();
                 ui.updateBoardUI();
             }
