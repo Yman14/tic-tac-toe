@@ -173,7 +173,10 @@ body {
     background-color: #00000062;
     border-radius: 10px;
     border: none;
-    transition: all .3 ease;
+}
+
+.btnFX {
+    transition: all .2s ease;
 }
 
 .btnFX:hover {
@@ -216,7 +219,13 @@ body {
         color: red;
     }
 
-    & .gameOverScreenButton {
+    & .gameOverScreenButtons{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    & .playAgainButton, & .homeButton {
         width: 200px;
         height: 50px;
         border: 2px solid white;

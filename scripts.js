@@ -287,15 +287,22 @@ function RenderGameOverStateUI() {
     const gameOverScreenText = document.createElement("p");
     gameOverScreenText.classList.add("gameOverScreenText");
     gameOverScreenText.textContent = "GAME OVER 0_0";
+    const gameOverScreenButtons = document.createElement("div");
+    gameOverScreenButtons.classList.add("gameOverScreenButtons");
 
-    const gameOverScreenButton = document.createElement("button");
-    gameOverScreenButton.classList.add("gameOverScreenButton");
-    gameOverScreenButton.textContent = "PLAY AGAIN :)";
-    gameOverScreenButton.classList.add("btnFX");
+    gameOverScreenPanel.append(gameOverScreenText, gameOverScreenButtons);
 
-    gameOverScreenPanel.append(gameOverScreenText, gameOverScreenButton);
+    const playAgainButton = document.createElement("button");
+    playAgainButton.classList.add("playAgainButton");
+    playAgainButton.textContent = "PLAY AGAIN :)";
+    playAgainButton.classList.add("btnFX");
+    const homeButton = document.createElement("button");
+    homeButton.classList.add("homeButton");
+    homeButton.textContent = "HOME";
+    homeButton.classList.add("btnFX");
+    gameOverScreenButtons.append(playAgainButton, homeButton);
 
-    gameOverScreenButton.addEventListener("click", () => {
+    playAgainButton.addEventListener("click", () => {
         StartGame();
     });
 };
@@ -383,4 +390,6 @@ function StartGame() {
 };
 
 //Show menu
-RenderMenuStateUI();
+// RenderMenuStateUI();
+RenderGameStateUI();
+RenderGameOverStateUI();
