@@ -155,7 +155,13 @@ function RenderGameStateUI(){
     gameScreen.append(playerScore, boardUI, playerTurnPanel, quitButton);
 
     //quitbutton ui
-    quitButton.textContent = "XXX";
+    quitButton.classList.add("btnFX");
+    quitButton.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+        </svg>
+        `;
+    // quitButton.textContent = "X";
 
     //render the score
     const renderScoreUI = () => {
