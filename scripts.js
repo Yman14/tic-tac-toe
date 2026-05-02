@@ -305,6 +305,17 @@ function RenderGameOverStateUI() {
     playAgainButton.addEventListener("click", () => {
         StartGame();
     });
+    homeButton.addEventListener("click", () => {
+        const tempPanel = document.createElement("div");
+        gameOverScreenPanel.append(tempPanel);
+        tempPanel.textContent = "KEEP PLAYING !!!";
+        tempPanel.style.color = "red";
+
+        //destroy element
+        setTimeout(() => {
+            tempPanel.remove();
+        }, 1500);
+    } );
 };
 
 
@@ -390,6 +401,4 @@ function StartGame() {
 };
 
 //Show menu
-// RenderMenuStateUI();
-RenderGameStateUI();
-RenderGameOverStateUI();
+RenderMenuStateUI();
