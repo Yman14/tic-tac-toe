@@ -16,8 +16,9 @@ function Gameboard() {
         }
     };
    const getBoard = () => board;
+   const getBoardSize = () => boardSize;
    const getDefaultMarker = () => defaultMarker;
-   return {boardSize, createBoard, getBoard, getDefaultMarker};
+   return {getBoardSize, createBoard, getBoard, getDefaultMarker};
 };
 function CreatePlayer(name, marker) {
     this.name = name;
@@ -122,11 +123,12 @@ function HandleGameplay () {
     };
 
     const getBoard = ()=> board.getBoard();
+    const getBoardSize = ()=> board.getBoardSize();
     const getActivePlayer = () => activePlayer;
     const getTargetScore = () => targetScore;
 
     return {p1, p2, loadPosition, 
-            getActivePlayer, getTargetScore, getBoard, 
+            getActivePlayer, getTargetScore, getBoard, getBoardSize, 
             validateInput, checkRoundWinCondition, checkGameOver, checkTie, 
             updateScore, switchPlayer, resetRound};
 };
@@ -135,7 +137,7 @@ function HandleGameplay () {
 
 //DOM UI
 //Game Screen
-function RenderGameStateUI(){
+function RenderGameStateUI(boardSize){
     console.log("Render Game State UI");
 
     const app = document.getElementById("app");
@@ -189,7 +191,6 @@ function RenderGameStateUI(){
         boardUI.appendChild(boardContainer);
 
         //tiles
-        boardSize = Gameboard().boardSize;
         for(let i = 0; i < boardSize; i++)
         {
             for(let j = 0; j < boardSize; j++)
@@ -332,7 +333,7 @@ function StartGame() {
     isGameActive = true;
     //logic and ui data
     let logic = HandleGameplay();
-    let ui = RenderGameStateUI();
+    let ui = RenderGameStateUI(logic.getBoardSize());
     
     //kill switch
     const controller = new AbortController();
