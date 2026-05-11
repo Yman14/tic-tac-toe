@@ -363,23 +363,27 @@ function StartGame() {
                 //update this only when theres a condition (*not yet implemented)
                 logic.resetRound();
                 ui.resetBoardUI();
-            }
-
-            if(logic.checkTie())
+            } 
+            else if(logic.checkTie())
             {
                 logic.resetRound();
                 ui.resetBoardUI();
             }
+            else{
+                //switch player active
+                logic.switchPlayer();
+                ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
+            }
 
             //check if the game is over
             if(logic.checkGameOver()){
+                isGameActive = false;
+                logic = null;
+                ui = null;
                 controller.abort();
+                console.log("game active off");
                 RenderGameOverStateUI();
             }
-
-            //switch player active
-            logic.switchPlayer();
-            ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
         }
     }, { signal });
 
