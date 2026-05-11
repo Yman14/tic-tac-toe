@@ -115,7 +115,7 @@ function HandleGameplay () {
     };
 
 
-    displayGameOverPanel = () => {
+    const displayGameOverPanel = () => {
         console.log("Game Winner: " + ((p1.getScore() > p2.getScore()) ? p1.name : p2.name));
         console.log(p1.name + ": " + p1.getScore());
         console.log(p2.name + ": " + p2.getScore());
@@ -183,18 +183,10 @@ function RenderGameStateUI(){
     renderScoreUI();
 
     //render the board
-    const renderBoardUI = (update) => {
-        let boardContainer;
-        if(update == null)
-        {
-            boardContainer = document.createElement("div");
-            boardContainer.classList.add("boardContainer");
-            boardUI.appendChild(boardContainer);
-        }
-        else{
-            boardContainer = document.querySelector(".boardContainer");
-            boardContainer.replaceChildren();
-        }
+    const renderBoardUI = () => {
+        let boardContainer = document.createElement("div");
+        boardContainer.classList.add("boardContainer");
+        boardUI.appendChild(boardContainer);
 
         //tiles
         boardSize = Gameboard().boardSize;
@@ -233,8 +225,11 @@ function RenderGameStateUI(){
             p2ScoreText.textContent = `${p2.getScore()}/${targetScore}`;
         }
     };
-    const updateBoardUI = () => {
-        renderBoardUI(true);
+    const resetBoardUI = () => {
+        // renderBoardUI(true);
+        const boardContainer = document.querySelectorAll(".tile");
+        boardContainer.forEach(tile => tile.textContent = "");
+        console.log("reset board ui");
     };
     const updatePlayerTurnPanelUI = (activePlayer) => {
         document.querySelector(".turnPanel").style.backgroundColor = `var(--${activePlayer}-color)`;
@@ -242,7 +237,7 @@ function RenderGameStateUI(){
 
     };
 
-    return {updateScoreUI, updateBoardUI, updatePlayerTurnPanelUI};
+    return {updateScoreUI, resetBoardUI, updatePlayerTurnPanelUI};
 
 };
 //Menu Screen
@@ -367,13 +362,13 @@ function StartGame() {
                 ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
                 //update this only when theres a condition (*not yet implemented)
                 logic.resetRound();
-                ui.updateBoardUI();
+                ui.resetBoardUI();
             }
 
             if(logic.checkTie())
             {
                 logic.resetRound();
-                ui.updateBoardUI();
+                ui.resetBoardUI();
             }
 
             //check if the game is over
