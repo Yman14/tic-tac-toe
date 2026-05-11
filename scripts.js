@@ -51,11 +51,10 @@ function StartGame() {
                 logic.resetRound();
                 ui.resetBoardUI();
             }
-            else{
-                //switch player active
-                logic.switchPlayer();
-                ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
-            }
+
+            //switch player active
+            logic.switchPlayer();
+            ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
 
             //check if the game is over
             if(logic.checkGameOver()){
