@@ -19,8 +19,6 @@ function Gameboard() {
    return {getBoardSize, createBoard, getBoard, getDefaultMarker};
 };
 function CreatePlayer(name, marker) {
-    name = name;
-    marker = marker;
     let score = 0;
 
     const win = () => { score++; };
@@ -115,7 +113,7 @@ export function HandleGameplay () {
         return (countTurn >= 9);
     };
 
-
+    //for console result
     const displayGameOverPanel = () => {
         console.log("Game Winner: " + ((p1.getScore() > p2.getScore()) ? p1.name : p2.name));
         console.log(p1.name + ": " + p1.getScore());
