@@ -68,9 +68,9 @@ function StartGame() {
         }
     }, { signal });
 
-    //if quit button is pressed
-    const quitButton = document.querySelector(".quitButton");
-    quitButton.addEventListener("click", () => { 
+    //if home button is pressed
+    const homeButton = document.querySelector(".homeButton");
+    homeButton.addEventListener("click", () => { 
         isGameActive = false;
         logic = null;
         ui = null;

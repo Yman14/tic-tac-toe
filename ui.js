@@ -12,21 +12,20 @@ export function RenderGameStateUI(boardSize){
     const playerScore = document.createElement("div");
     const boardUI = document.createElement("div");
     const playerTurnPanel = document.createElement("div");
-    const quitButton = document.createElement("button");
+    const homeButton = document.createElement("button");
     playerScore.classList.add("playerScore");
     boardUI.classList.add("boardUI");
     playerTurnPanel.classList.add("playerTurnPanel");
-    quitButton.classList.add("quitButton");
-    gameScreen.append(playerScore, boardUI, playerTurnPanel, quitButton);
+    homeButton.classList.add("homeButton");
+    gameScreen.append(playerScore, boardUI, playerTurnPanel, homeButton);
 
-    //quitbutton ui
-    quitButton.classList.add("btnFX");
-    quitButton.innerHTML = `
+    //homeButton ui
+    homeButton.classList.add("btnFX");
+    homeButton.innerHTML = `
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
         </svg>
         `;
-    // quitButton.textContent = "X";
 
     //render the score
     const renderScoreUI = () => {
@@ -95,9 +94,9 @@ export function RenderGameStateUI(boardSize){
         boardContainer.forEach(tile => tile.textContent = "");
         console.log("reset board ui");
     };
-    const updatePlayerTurnPanelUI = (activePlayer) => {
-        document.querySelector(".turnPanel").style.backgroundColor = `var(--${activePlayer}-color)`;
-        document.querySelector(".turnPanelText").textContent = activePlayer;
+    const updatePlayerTurnPanelUI = (activePlayerName) => {
+        document.querySelector(".turnPanel").style.backgroundColor = `var(--${activePlayerName}-color)`;
+        document.querySelector(".turnPanelText").textContent = activePlayerName;
 
     };
 
@@ -127,7 +126,6 @@ export function RenderMenuStateUI(onStartGame) {
     startButton.classList.add("btnFX");
     menuScreen.appendChild(startButton);
     startButton.textContent = "Start Game";
-    menuScreen.appendChild(startButton);
 
     startButton.addEventListener("click", ()=>{
         onStartGame();
@@ -137,6 +135,7 @@ export function RenderMenuStateUI(onStartGame) {
 //Game Over Screen
 export function RenderGameOverStateUI(onStartGame) {
     const app = document.getElementById("app");
+    app.replaceChildren();
     const gameOverScreen = document.createElement("div");
     gameOverScreen.classList.add("gameOverScreen");
     app.appendChild(gameOverScreen);
