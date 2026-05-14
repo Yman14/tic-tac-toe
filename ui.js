@@ -59,7 +59,9 @@ export function RenderGameStateUI(boardSize){
             {
                 const tile = document.createElement("button");
                 tile.classList.add("tile");
-                tile.classList.add(`${i}${j}`);
+                tile.classList.add(`tile${i}${j}`);
+                tile.dataset.x = i;
+                tile.dataset.y = j;
                 boardContainer.appendChild(tile);
             }
         }

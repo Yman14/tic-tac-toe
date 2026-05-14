@@ -33,7 +33,9 @@ function StartGame() {
 
         if(e.target.classList.contains("tile")){
             //get the coordinates based on the 2nd class name
-            const input = e.target.classList[1];
+            const x = e.target.dataset.x;
+            const y = e.target.dataset.y;
+            const input =  `${x}${y}`;
 
             //game logic calculation and mark coordinates
             const processedInput = logic.validateInput(input);
@@ -42,40 +44,12 @@ function StartGame() {
             //mark the tile ui
             e.target.textContent = logic.getActivePlayer().marker;  
 
-            //check if someone won
-            if(logic.checkRoundWinCondition()){
-                logic.updateScore();
-                ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
-                //update this only when theres a condition (*not yet implemented)
-                logic.resetRound();
-                ui.resetBoardUI();
-
-                //check if the game is over
-                if(logic.checkGameOver()){
-                    isGameActive = false;
-                    logic = null;
-                    ui = null;
-                    controller.abort();
-                    console.log("game active off");
-                    UI.RenderGameOverStateUI(StartGame);
-                }
-            } 
-            else if(logic.checkTie())
+            checkWin();
+            //check if p2 is computer or not
+            if(logic.getActivePlayer().name == "PLAYER-2" && logic.getActivePlayer().isComputer == true) 
             {
-                logic.resetRound();
-                ui.resetBoardUI();
+                computerPlaying();
             }
-
-            //switch player active
-            logic.switchPlayer();
-            ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
-
-            // //if the player 2 is a computer then
-            // if(logic.getActivePlayer().isComputer == true)
-            // {
-            //     computerMove = getAvailableMoves();
-            //     loadPosition(computerMove.x, computerMove.y);
-            // }
         }
     }, { signal });
 
@@ -89,6 +63,47 @@ function StartGame() {
         console.log("game active off");
         UI.RenderMenuStateUI(StartGame);
     }, { signal });
+
+
+    function checkWin() {
+        //check if someone won
+        if(logic.checkRoundWinCondition()){
+            logic.updateScore();
+            ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
+            //update this only when theres a condition (*not yet implemented)
+            logic.resetRound();
+            ui.resetBoardUI();
+
+            //check if the game is over
+            if(logic.checkGameOver()){
+                isGameActive = false;
+                logic = null;
+                ui = null;
+                controller.abort();
+                console.log("game active off");
+                UI.RenderGameOverStateUI(StartGame);
+                return;
+            }
+        } 
+        else if(logic.checkTie())
+        {
+            logic.resetRound();
+            ui.resetBoardUI();
+        }
+
+        //switch player active
+        logic.switchPlayer();
+        ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
+    }
+
+    function computerPlaying() {
+        let computerMove = logic.getAvailableMoves();
+        logic.loadPosition(computerMove.x, computerMove.y);
+        //manual query, change later
+        const cell = document.querySelector(`.tile${computerMove.x}${computerMove.y}`);
+        cell.textContent = logic.getActivePlayer().marker;
+        checkWin();
+    }
 };
 
 //Show menu

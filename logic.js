@@ -13,17 +13,21 @@ function Gameboard() {
             }
         }
     };
+
+    const setMarker = (x, y, marker) => {
+        board[x][y] = marker;
+    }
    const getBoard = () => board;
    const getBoardSize = () => boardSize;
    const getDefaultMarker = () => defaultMarker;
    return {getBoardSize, createBoard, getBoard, getDefaultMarker};
 };
-function CreatePlayer(name, marker) {
+function CreatePlayer(name, marker, isComputer = false) {
     let score = 0;
 
     const win = () => { score++; };
     const getScore = () => score;
-    return{name, marker, win, getScore};
+    return{name, marker, win, getScore, isComputer};
 };
 
 
@@ -31,7 +35,7 @@ export function HandleGameplay () {
     const board = Gameboard();
     board.createBoard();
     const p1 = CreatePlayer("PLAYER-1", 'X');
-    const p2 = CreatePlayer("PLAYER-2", 'O');
+    const p2 = CreatePlayer("PLAYER-2", 'O', true);
     let activePlayer = p1;
     //First to reach the score wins
     const targetScore = 2;
@@ -51,6 +55,23 @@ export function HandleGameplay () {
             return {isValid: true, x,y};
         }
         return {isValid: false};
+    };
+
+    const getAvailableMoves = () => {
+        const currentBoard = board.getBoard();
+        const size = board.getBoardSize();
+        const empty = board.getDefaultMarker();
+        const moves = [];
+
+        for (let i = 0; i < size; i++) {
+            for (let j = 0; j < size; j++) {
+                if (currentBoard[i][j] === empty) {
+                    // moves.push({ x: i, y: j });
+                    return {x:i, y:j};
+                }
+            }
+        }
+        // return moves;
     };
 
     const checkRoundWinCondition = () => {
@@ -116,7 +137,7 @@ export function HandleGameplay () {
     const getTargetScore = () => targetScore;
 
     return {p1, p2, loadPosition, 
-            getActivePlayer, getTargetScore, getBoard, getBoardSize, 
+            getActivePlayer, getTargetScore, getBoard, getBoardSize, getAvailableMoves,
             validateInput, checkRoundWinCondition, checkGameOver, checkTie, 
             updateScore, switchPlayer, resetRound};
 };
