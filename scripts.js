@@ -16,6 +16,10 @@ function StartGame() {
     let logic = HandleGameplay();
     let ui = UI.RenderGameStateUI(logic.getBoardSize());
     
+    //visual
+    ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
+    ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
+    
     //kill switch
     const controller = new AbortController();
     const{ signal } = controller;
