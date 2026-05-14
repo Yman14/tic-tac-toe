@@ -54,32 +54,22 @@ export function HandleGameplay () {
     };
 
     const checkRoundWinCondition = () => {
-        //MANUAL WINNNING CONDITIONS
-        //first corner base check
-        const upperHorizontal = (board.getBoard()[0][0] === board.getBoard()[0][1]) && (board.getBoard()[0][1] === board.getBoard()[0][2]);
-        const leftVertical = (board.getBoard()[0][0] === board.getBoard()[1][0]) && (board.getBoard()[1][0] === board.getBoard()[2][0]);
-        //last corner base check
-        const lowerHorizontal = (board.getBoard()[2][2] === board.getBoard()[2][1]) && (board.getBoard()[2][1] === board.getBoard()[2][0]);
-        const rightVertical = (board.getBoard()[2][2] === board.getBoard()[1][2]) && (board.getBoard()[1][2] === board.getBoard()[0][2]);
-        //middle base check
-        const midVertical = (board.getBoard()[1][1] === board.getBoard()[0][1]) && (board.getBoard()[1][1] === board.getBoard()[2][1]);
-        const midHorizontal = (board.getBoard()[1][1] === board.getBoard()[1][0]) && (board.getBoard()[1][1] === board.getBoard()[1][2]);
-        const midDiagionalFirst = (board.getBoard()[1][1] === board.getBoard()[0][0]) && (board.getBoard()[1][1] === board.getBoard()[2][2]);
-        const midDiagionalSecond = (board.getBoard()[1][1] === board.getBoard()[0][2]) && (board.getBoard()[1][1] === board.getBoard()[2][0]);
+        const b = board.getBoard();
+        const size = board.getBoardSize();
+        const empty = board.getDefaultMarker();
 
-        if((upperHorizontal || leftVertical)  && (board.getBoard()[0][0] != board.getDefaultMarker()))
-        {
-            return true;
+        // Row and Column vector verification
+        for (let i = 0; i < size; i++) {
+            if (b[i][0] !== empty && b[i].every(val => val === b[i][0])) return true;
+            if (b[0][i] !== empty && b.every(row => row[i] === b[0][i])) return true;
         }
-        else if((lowerHorizontal || rightVertical)  && (board.getBoard()[2][2] != board.getDefaultMarker())){
-           return true;
-        }
-        else if((midVertical || midHorizontal || midDiagionalFirst || midDiagionalSecond)  && (board.getBoard()[1][1] != board.getDefaultMarker())){
-           return true;
-        }
+        // Diagonal vector verification
+        if (b[0][0] !== empty && b.every((row, i) => row[i] === b[0][0])) return true;
+        if (b[0][size - 1] !== empty && b.every((row, i) => row[size - 1 - i] === b[0][size - 1])) return true;
 
-        return false; 
+        return false;
     };
+
 
     const checkGameOver = () => {
         if(p1.getScore() >= targetScore || p2.getScore() >= targetScore)
