@@ -49,6 +49,16 @@ function StartGame() {
                 //update this only when theres a condition (*not yet implemented)
                 logic.resetRound();
                 ui.resetBoardUI();
+
+                //check if the game is over
+                if(logic.checkGameOver()){
+                    isGameActive = false;
+                    logic = null;
+                    ui = null;
+                    controller.abort();
+                    console.log("game active off");
+                    UI.RenderGameOverStateUI(StartGame);
+                }
             } 
             else if(logic.checkTie())
             {
@@ -60,15 +70,12 @@ function StartGame() {
             logic.switchPlayer();
             ui.updatePlayerTurnPanelUI(logic.getActivePlayer().name);
 
-            //check if the game is over
-            if(logic.checkGameOver()){
-                isGameActive = false;
-                logic = null;
-                ui = null;
-                controller.abort();
-                console.log("game active off");
-                UI.RenderGameOverStateUI(StartGame);
-            }
+            // //if the player 2 is a computer then
+            // if(logic.getActivePlayer().isComputer == true)
+            // {
+            //     computerMove = getAvailableMoves();
+            //     loadPosition(computerMove.x, computerMove.y);
+            // }
         }
     }, { signal });
 

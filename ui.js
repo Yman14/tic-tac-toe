@@ -135,7 +135,7 @@ export function RenderMenuStateUI(onStartGame) {
 //Game Over Screen
 export function RenderGameOverStateUI(onStartGame) {
     const app = document.getElementById("app");
-    app.replaceChildren();
+    // app.replaceChildren(); //games background can be seen
     const gameOverScreen = document.createElement("div");
     gameOverScreen.classList.add("gameOverScreen");
     app.appendChild(gameOverScreen);
