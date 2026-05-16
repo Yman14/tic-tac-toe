@@ -5,7 +5,7 @@ import * as UI from './ui.js';
 let isGameActive = false;
 
 //the game manager that manage the ui and logic
-function StartGame() {
+function StartGame(mode = "player") {
     //game running log
     // setInterval(() => {
     //     console.log("Game Logic Heartbeat: ", performance.now());
@@ -13,7 +13,7 @@ function StartGame() {
 
     isGameActive = true;
     //logic and ui data
-    let logic = HandleGameplay();
+    let logic = HandleGameplay(mode);
     let ui = UI.RenderGameStateUI(logic.getBoardSize());
     
     //visual

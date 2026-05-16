@@ -65,6 +65,20 @@ body {
         text-shadow: 10px 10px 1px lightsalmon;
         text-align: center;
     };
+
+    & .changeModeButton {
+        position: absolute;
+        bottom: 30%;
+        width: 320px;
+        height: 70px;
+        border-radius: 10px;
+        box-shadow: 0 7px 7px #bbb;
+        background-color: #fff;
+        border: none;
+        /* text */
+        color: #000;
+        font-size: 200%;
+    };
 }
 
 

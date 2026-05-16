@@ -128,9 +128,24 @@ export function RenderMenuStateUI(onStartGame) {
     startButton.classList.add("btnFX");
     menuScreen.appendChild(startButton);
     startButton.textContent = "Start Game";
-
     startButton.addEventListener("click", ()=>{
-        onStartGame();
+        (content === "Player vs Player") ? onStartGame("player"): onStartGame("computer");
+    });
+
+    //mode
+    const changeModeButton = document.createElement("button");
+    changeModeButton.classList.add("changeModeButton");
+    changeModeButton.classList.add("btnFX");
+    menuScreen.appendChild(changeModeButton);
+    changeModeButton.textContent = "Player vs Player";
+    let content = changeModeButton.textContent;
+    changeModeButton.addEventListener("click", (e)=>{
+        content = e.target.textContent;
+        const playerMode = "Player vs Player";
+        const computerMode = "Player vs Computer";
+        const newMode = (content === playerMode) ? computerMode : playerMode; 
+        e.target.textContent = newMode;
+        content = newMode;
     });
 };
 

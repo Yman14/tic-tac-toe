@@ -31,11 +31,12 @@ function CreatePlayer(name, marker, isComputer = false) {
 };
 
 
-export function HandleGameplay () {
+export function HandleGameplay (mode) {
+    console.log("Game: player vs " + mode);
     const board = Gameboard();
     board.createBoard();
     const p1 = CreatePlayer("PLAYER-1", 'X');
-    const p2 = CreatePlayer("PLAYER-2", 'O', true);
+    const p2 = CreatePlayer("PLAYER-2", 'O', (mode == "computer"));
     let activePlayer = p1;
     //First to reach the score wins
     const targetScore = 2;
