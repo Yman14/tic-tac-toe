@@ -150,7 +150,7 @@ export function RenderMenuStateUI(onStartGame) {
 };
 
 //Game Over Screen
-export function RenderGameOverStateUI(onStartGame) {
+export function RenderGameOverStateUI(onStartGame, mode) {
     const app = document.getElementById("app");
     // app.replaceChildren(); //games background can be seen
     const gameOverScreen = document.createElement("div");
@@ -180,7 +180,7 @@ export function RenderGameOverStateUI(onStartGame) {
     gameOverScreenButtons.append(playAgainButton, homeButton);
 
     playAgainButton.addEventListener("click", () => {
-        onStartGame();
+        onStartGame(mode);
     });
     homeButton.addEventListener("click", () => {
         const tempPanel = document.createElement("div");

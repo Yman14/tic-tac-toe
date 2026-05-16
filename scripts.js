@@ -83,7 +83,7 @@ function StartGame(mode = "player") {
                 ui = null;
                 controller.abort();
                 console.log("game active off");
-                UI.RenderGameOverStateUI(StartGame);
+                UI.RenderGameOverStateUI(StartGame, mode);
                 return;
             }
         } 
