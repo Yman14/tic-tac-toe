@@ -48,7 +48,9 @@ function StartGame(mode = "player") {
             //check if p2 is computer or not
             if(logic.getActivePlayer().name == "PLAYER-2" && logic.getActivePlayer().isComputer == true) 
             {
-                computerPlaying();
+                setTimeout(() => {
+                    computerPlaying();
+                }, 1000);
             }
         }
     }, { signal });
