@@ -50,7 +50,7 @@ function StartGame(mode = "player") {
             {
                 setTimeout(() => {
                     computerPlaying();
-                }, 1000);
+                }, 500);
             }
         }
     }, { signal });
