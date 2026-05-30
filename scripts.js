@@ -50,7 +50,7 @@ function StartGame(mode = "player") {
             {
                 setTimeout(() => {
                     computerPlaying();
-                }, 500);
+                }, 300);
             }
         }
     }, { signal });
@@ -99,7 +99,8 @@ function StartGame(mode = "player") {
     }
 
     function computerPlaying() {
-        let computerMove = logic.getAvailableMoves();
+        //difficulty level: easy, normal, hard
+        let computerMove = logic.getAvailableMoves("normal");
         logic.loadPosition(computerMove.x, computerMove.y);
         //manual query, change later
         const cell = document.querySelector(`.tile${computerMove.x}${computerMove.y}`);

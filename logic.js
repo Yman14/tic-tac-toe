@@ -58,22 +58,57 @@ export function HandleGameplay (mode) {
         return {isValid: false};
     };
 
-    const getAvailableMoves = () => {
-        const currentBoard = board.getBoard();
+    const getAvailableMoves = (difficulty) => {
+        const b = board.getBoard();
         const size = board.getBoardSize();
         const empty = board.getDefaultMarker();
         const moves = [];
+        console.log(b)
 
+        if(difficulty == "easy"){
+            return easyMode(b, size, empty);
+        }
+        else if (difficulty == "normal"){
+            for(let i = 0; i < size; i++){
+                for(let j = 0; j < size; j++)
+                {
+                    //if i marked this index i j and checkroundwincondition is true then
+                    //return i j
+                    if(b[i][j] === empty)
+                    {
+                        b[i][j] = p1.marker;
+                        if(checkRoundWinCondition()){
+                            b[i][j] = empty;
+                            return {x:i, y:j};
+                        }
+
+                        b[i][j] = p2.marker;
+                        if(checkRoundWinCondition()){
+                            b[i][j] = empty;
+                            return {x:i, y:j};
+                        }
+
+                        //reset the current tile
+                        b[i][j] = empty;
+                    }
+                }
+            }
+
+            return easyMode(b, size, empty);
+
+        }
+        return;
+    };
+
+    const easyMode = (b, size, empty) => {
         for (let i = 0; i < size; i++) {
             for (let j = 0; j < size; j++) {
-                if (currentBoard[i][j] === empty) {
-                    // moves.push({ x: i, y: j });
+                if (b[i][j] === empty) {
                     return {x:i, y:j};
                 }
             }
         }
-        // return moves;
-    };
+    }
 
     const checkRoundWinCondition = () => {
         const b = board.getBoard();
