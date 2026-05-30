@@ -72,9 +72,16 @@ function StartGame(mode = "player") {
         if(logic.checkRoundWinCondition()){
             logic.updateScore();
             ui.updateScoreUI(logic.p1, logic.p2, logic.getTargetScore());
-            //update this only when theres a condition (*not yet implemented)
-            logic.resetRound();
-            ui.resetBoardUI();
+            
+            //deactive game for a sec to remove tile access
+            isGameActive = false;
+            flashTiles();
+            setTimeout(() => {
+                logic.resetRound();
+                ui.resetBoardUI();
+                isGameActive = true;
+            }, 1000);
+
 
             //check if the game is over
             if(logic.checkGameOver()){
@@ -106,6 +113,19 @@ function StartGame(mode = "player") {
         const cell = document.querySelector(`.tile${computerMove.x}${computerMove.y}`);
         cell.textContent = logic.getActivePlayer().marker;
         checkWin();
+    }
+
+    function flashTiles() {
+        let count = 0;
+        const interval = setInterval(() => {
+            tiles.style.backgroundColor = count % 2 === 0 ? "white" : "yellow";
+            count++;
+
+            if (count === 7) {
+                clearInterval(interval);
+                tiles.style.backgroundColor = ""; 
+            }
+        }, 150);
     }
 };
 
